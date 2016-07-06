@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Vornamen der aktuellen Wohnbev&ouml;lkerung der Stadt Z&uuml;rich</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"/>
+
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
+    <link rel="stylesheet" href="../node_modules/angular-material/angular-material.css"/>
+    <link rel="stylesheet" href="assets/app.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <style type="text/css">
+        /**
+         * Hide when Angular is not yet loaded and initialized
+         */
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+            display: none !important;
+        }
+    </style>
+
+</head>
+
+<body ng-app="starterApp" layout="column" ng-controller="NamesController as namesCtrl" ng-cloak>
+
+<md-toolbar layout="row">
+    <md-button class="menu" hide-gt-sm aria-label="Menu">
+        <md-icon md-svg-icon="menu"></md-icon>
+    </md-button>
+    <h1 id="pageTitle">Vornamen der Stadt Zürich</h1>
+</md-toolbar>
+
+<div flex layout="row">
+    <section ng-controller="TabsController as tabsCtrl" ng-cloak>
+        <md-content>
+            <md-tabs md-dynamic-height md-border-bottom md-selected="tabsCtrl.selectedIndex">
+                <md-tab label="&Uuml;bersicht">
+                    <div ng-controller="SummaryController as summeryCtrl">
+                        <md-content class="md-padding">
+                            <h2 class="md-title">Vornamen der aktuellen Wohnbevölkerung der Stadt Zürich</h2>
+                            <p>
+                                Anzahl Personen der wirtschaftlichen Wohnbevölkerung der Stadt Zürich nach Vorname,
+                                Geschlecht und Jahrgang.
+                                <br/>
+                                In diesem Datensatz sind nicht alle Vornamen der Stadt Zürich zu finden. Pro Geschlecht und
+                                Vornamen müssen mindestens 10 Fälle vorkommen.
+                            </p>
+
+                            <div>
+                                <h3>Top 100 Namen</h3>
+                                <div layout-gt-sm="row">
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Geschlecht</label>
+                                        <md-select ng-model="summeryCtrl.gender" ng-change="summeryCtrl.modelChanged()">
+                                            <md-option ng-repeat="(k, v) in summeryCtrl.genders" value="{{v}}">
+                                                {{k}}
+                                          </md-option>
+                                        </md-select>
+                                    </md-input-container>
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Von Jahrgang</label>
+                                        <input required type="number" step="any" name="from"
+                                               ng-model="summeryCtrl.from"
+                                               ng-change="summeryCtrl.modelChanged()"
+                                               ng-model-options="{debounce:1000}"
+                                               min="1900"
+                                               max="{{ summeryCtrl.to }}" />
+                                    </md-input-container>
+                                    <md-input-container class="md-block" flex-gt-sm>
+                                        <label>Bis Jahrgang</label>
+                                        <input required type="number" step="any" name="to"
+                                               ng-model="summeryCtrl.to"
+                                               ng-change="summeryCtrl.modelChanged()"
+                                               ng-model-options="{debounce:1000}"
+                                               min="{{ summeryCtrl.from }}"
+                                               max="2020" />
+                                    </md-input-container>
+                                </div>
+
+                                <div>
+                                    <horizontal-bar-chart data="summaryData" navigate-to="tabsCtrl.selectLineChartTab(name)"></horizontal-bar-chart>
+                                </div>
+                            </div>
+                        </md-content>
+                    </div>
+                </md-tab>
+
+                <md-tab label="Namen nach Jahrgang">
+                    <div ng-controller="NamesController as namesCtrl">
+                        <md-content class="md-padding">
+                            <h2 class="md-title">Anzahl Vornamen nach Jahrgang</h2>
+                            <p>
+                                Geben sie den Namen ein um zu sehen, wieviele Zürcher mit welchem Jahrgang diesen Namen tragen.
+                            </p>
+
+                            <md-content class="md-padding" layout-xs="column" layout="row">
+                                <section layout="row" layout-sm="column" layout-align="left" layout-wrap>
+                                    <md-input-container>
+                                        <md-chips ng-model="namesCtrl.names"
+                                                  name="selectedNames"
+                                                  readonly="namesCtrl.readonly"
+                                                  md-max-chips="10"
+                                                  placeholder="Name eingeben"
+                                                  delete-button-label="Namen l&ouml;schen"
+                                                  delete-hint="Verwenden Sie die L&ouml;schen-Taste um Namen zu entfernen"
+                                                  md-on-add="namesCtrl.addChip($chip)"
+                                                  md-on-remove="namesCtrl.removeChip($chip)"
+                                                  secondary-placeholder="+Name">
+                                        </md-chips>
+                                    </md-input-container>
+                                </section>
+                                <div>
+                                    <names-line-chart data="chartData"></names-line-chart>
+                                </div>
+                            </md-content>
+                        </div>
+                </md-tab>
+            </md-tabs>
+        </md-content>
+    </section>
+</div>
+
+<script src="../node_modules/angular/angular.js"></script>
+<script src="../node_modules/angular-animate/angular-animate.js"></script>
+<script src="../node_modules/angular-aria/angular-aria.js"></script>
+<script src="../node_modules/angular-messages/angular-messages.min.js"></script>
+<script type="text/javascript" src="../node_modules/angular-material/angular-material.js"></script>
+
+
+<script src="../node_modules/d3/d3.min.js"></script>
+<script src="../node_modules/d3-tip/index.js"></script>
+<!--
+<script src="http://d3js.org/d3.v3.min.js"></script>
+
+<script src="../node_modules/d3-time/build/d3-time.min.js"></script>
+<script src="../node_modules/d3-time-format/build/d3-time-format.min.js"></script>
+<script src="../node_modules/d3-scale/build/d3-scale.min.js"></script>
+-->
+
+<script src="src/names/Names.js"></script>
+<script src="src/names/NamesService.js"></script>
+<script src="src/names/NamesController.js"></script>
+<script src="src/names/SummaryController.js"></script>
+<script src="src/names/TabsController.js"></script>
+
+<link rel="stylesheet" href="src/names/controls/line_chart/line_chart.css"/>
+<script src="src/names/controls/line_chart/line_chart.js"></script>
+
+<link rel="stylesheet" href="src/names/controls/horizontal_bar_chart/horizontal_bar_chart.css"/>
+<script src="src/names/controls/horizontal_bar_chart/horizontal_bar_chart.js"></script>
+
+<script type="text/javascript">
+
+    angular
+            .module('starterApp', ['ngMaterial', 'names'])
+            .config(function ($mdThemingProvider, $mdIconProvider) {
+
+                $mdIconProvider
+                        .defaultIconSet("./assets/svg/avatars.svg", 128)
+                        .icon("menu", "./assets/svg/menu.svg", 24)
+                        .icon("share", "./assets/svg/share.svg", 24)
+                        .icon("google_plus", "./assets/svg/google_plus.svg", 512)
+                        .icon("hangouts", "./assets/svg/hangouts.svg", 512)
+                        .icon("twitter", "./assets/svg/twitter.svg", 512)
+                        .icon("phone", "./assets/svg/phone.svg", 512);
+
+                $mdThemingProvider.theme('default')
+                        .primaryPalette('green')
+                        .accentPalette('red');
+
+            });
+
+</script>
+
+
+</body>
+</html>

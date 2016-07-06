@@ -1,0 +1,36 @@
+.bar_chart.male rect {
+    fill: steelblue;
+}
+
+.bar_chart.female rect {
+    fill: purple;
+}
+
+
+.bar_chart:hover rect {
+    fill: maroon;
+}
+
+.bar_chart text.value_text {
+    fill: white;
+    font: 11pt sans-serif;
+    text-anchor: end;
+}
+
+.bar_chart text.name_text {
+    fill: black;
+    font: 11pt sans-serif;
+    text-anchor: start;
+}
+
+.bar_chart text.position_text {
+    fill: white;
+    font: 11pt sans-serif;
+    text-anchor: start;
+}
+
+
+table.info_table{
+    background-color: maroon;
+    color: white;
+}
