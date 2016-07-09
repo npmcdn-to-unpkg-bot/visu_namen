@@ -1,3 +1,12 @@
+-- ---------------------------------------------------------------------------------------
+-- Erstellt die MySQL-Datenbank und die Tabelle für die Applikation
+-- Tabelle mit den Vornamen der aktuellen Zürcher Wohnbevölkerung
+-- Quelle: Open Data Zürich
+--         https://data.stadt-zuerich.ch/dataset/bev-bestand-vornamen-jahrgang-geschlecht
+-- Lizenz: Creative Commons CC Zero License (cc-zero)
+--         http://www.opendefinition.org/licenses/cc-zero
+-- ---------------------------------------------------------------------------------------
+
 CREATE DATABASE  IF NOT EXISTS `data_vis_project` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `data_vis_project`;
 -- MySQL dump 10.13  Distrib 5.7.9, for osx10.9 (x86_64)
